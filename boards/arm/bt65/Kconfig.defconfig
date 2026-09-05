@@ -3,9 +3,6 @@
 
 if BOARD_BT65
 
-config BOARD
-	default "bt65"
-
 if USB
 
 config USB_NRFX
