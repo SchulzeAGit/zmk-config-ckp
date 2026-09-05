@@ -1,7 +1,7 @@
 # Copyright (c) 2021 Polarity Works
 # SPDX-License-Identifier: MIT
 
-if BOARD_BT65
+if BOARD_CKP_BT65
 
 if USB
 
@@ -28,4 +28,4 @@ config ZMK_BATTERY_VOLTAGE_DIVIDER
 config ZMK_KEYBOARD_NAME
 	default "BT65"
 
-endif # BOARD_BT65
+endif # BOARD_CKP_BT65

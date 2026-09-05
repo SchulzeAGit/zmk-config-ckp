@@ -1,4 +1,4 @@
-identifier: bt65
+identifier: ckp_bt65/nrf52840
 name: bt65
 type: mcu
 arch: arm

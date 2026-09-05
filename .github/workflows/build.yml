@@ -38,9 +38,9 @@ jobs:
       - name: West Zephyr export
         working-directory: ${{ runner.temp }}/zmk-workspace
         run: west zephyr-export
-      - name: West Build (bt65)
+      - name: West Build (ckp_bt65)
         working-directory: ${{ runner.temp }}/zmk-workspace
-        run: west build -s zmk/app -b bt65 -- -DZMK_CONFIG="${GITHUB_WORKSPACE}/config" -DZMK_EXTRA_MODULES="${GITHUB_WORKSPACE}"
+        run: west build -s zmk/app -b ckp_bt65 -- -DZMK_CONFIG="${GITHUB_WORKSPACE}/config" -DZMK_EXTRA_MODULES="${GITHUB_WORKSPACE}"
       - name: bt65 Kconfig file
         working-directory: ${{ runner.temp }}/zmk-workspace
         run: cat build/zephyr/.config | grep -v "^#" | grep -v "^$"
