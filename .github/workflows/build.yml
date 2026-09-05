@@ -11,34 +11,41 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Prepare isolated workspace
+        run: |
+          mkdir -p "${RUNNER_TEMP}/zmk-workspace/config"
+          cp -R config/. "${RUNNER_TEMP}/zmk-workspace/config/"
       - name: Cache west modules
         uses: actions/cache@v4
         env:
           cache-name: cache-zephyr-modules
         with:
           path: |
-            modules/
-            tools/
-            zephyr/
-            bootloader/
-            zmk/
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('manifest-dir/west.yml') }}
+            ${{ runner.temp }}/zmk-workspace/modules/
+            ${{ runner.temp }}/zmk-workspace/tools/
+            ${{ runner.temp }}/zmk-workspace/zephyr/
+            ${{ runner.temp }}/zmk-workspace/bootloader/
+            ${{ runner.temp }}/zmk-workspace/zmk/
+          key: ${{ runner.os }}-isolated-4.1-${{ env.cache-name }}-${{ hashFiles('config/west.yml') }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+            ${{ runner.os }}-isolated-4.1-${{ env.cache-name }}-
       - name: West Init
+        working-directory: ${{ runner.temp }}/zmk-workspace
         run: west init -l config
       - name: West Update
+        working-directory: ${{ runner.temp }}/zmk-workspace
         run: west update
       - name: West Zephyr export
+        working-directory: ${{ runner.temp }}/zmk-workspace
         run: west zephyr-export
       - name: West Build (bt65)
+        working-directory: ${{ runner.temp }}/zmk-workspace
         run: west build -s zmk/app -b bt65 -- -DZMK_CONFIG="${GITHUB_WORKSPACE}/config" -DZMK_EXTRA_MODULES="${GITHUB_WORKSPACE}"
       - name: bt65 Kconfig file
+        working-directory: ${{ runner.temp }}/zmk-workspace
         run: cat build/zephyr/.config | grep -v "^#" | grep -v "^$"
       - name: Rename zmk.uf2
-        run: cp build/zephyr/zmk.uf2 bt65.uf2
+        run: cp "${RUNNER_TEMP}/zmk-workspace/build/zephyr/zmk.uf2" bt65.uf2
       - name: Archive (bt65)
         uses: actions/upload-artifact@v4
         with:
